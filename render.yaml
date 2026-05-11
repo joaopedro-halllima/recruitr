@@ -1,6 +1,6 @@
 databases:
   - name: recruitr-db
-    plan: starter
+    plan: basic-256mb
     databaseName: recruitr
     user: recruitr
 
