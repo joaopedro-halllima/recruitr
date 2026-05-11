@@ -1,0 +1,10 @@
+{
+  "token_hmac_secret_key": "dev_token_secret_change_me",
+  "api_key": "dev_api_key_change_me",
+  "admin": true,
+  "admin_password": "admin",
+  "admin_secret": "admin_secret_change_me",
+  "allowed_origins": ["http://localhost:3000", "http://localhost:8001"],
+  "port": 8000
+}
+

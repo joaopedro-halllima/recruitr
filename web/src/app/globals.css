@@ -1,0 +1,283 @@
+@import "tailwindcss";
+
+:root {
+  --app-bg: #f3f6fb;
+  --app-surface: rgba(255, 255, 255, 0.82);
+  --app-surface-strong: rgba(255, 255, 255, 0.92);
+  --app-input: rgba(248, 250, 252, 0.95);
+  --app-border: rgba(15, 23, 42, 0.14);
+  --app-text: #0f172a;
+  --app-muted: #5b6576;
+}
+
+@theme inline {
+  --color-background: var(--app-bg);
+  --color-foreground: var(--app-text);
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+html[data-theme="dark"] {
+  --app-bg: #061327;
+  --app-surface: rgba(255, 255, 255, 0.05);
+  --app-surface-strong: rgba(255, 255, 255, 0.1);
+  --app-input: rgba(10, 10, 10, 0.6);
+  --app-border: rgba(255, 255, 255, 0.12);
+  --app-text: #f5f5f5;
+  --app-muted: #a3a3a3;
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+html[data-theme="dark"] .theme-content,
+html[data-theme="dark"] .athlete-profile-shell.min-h-screen,
+html[data-theme="dark"] .coach-profile-shell.min-h-screen {
+  background-image: linear-gradient(180deg, rgba(5, 14, 31, 0.24) 0%, rgba(5, 14, 31, 0.34) 55%, rgba(2, 8, 20, 0.5) 100%) !important;
+  background-color: transparent !important;
+}
+
+html[data-theme="dark"] body {
+  background-image: url("/demo/page_wallpaper.png?v=3");
+  background-size: 100vw 100vh;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Keep panel styling consistent with the right-rail cards across app shell pages. */
+html[data-theme="dark"] .theme-content :is(div, section, article, aside).rounded-2xl.border.border-white\/10.bg-white\/5 {
+  border-color: rgba(34, 211, 238, 0.2) !important;
+  background: linear-gradient(180deg, rgba(16, 31, 55, 0.9), rgba(9, 19, 37, 0.82)) !important;
+  box-shadow: 0 16px 34px rgba(2, 8, 20, 0.38) !important;
+  backdrop-filter: blur(8px);
+}
+
+html[data-theme="dark"] .theme-content :is(div, section, article, aside, a).rounded-xl.border.border-white\/10.bg-neutral-950\/40,
+html[data-theme="dark"] .theme-content :is(div, section, article, aside, a).rounded-xl.border.border-white\/10.bg-neutral-950\/30,
+html[data-theme="dark"] .theme-content :is(div, section, article, aside, a).rounded-lg.border.border-white\/10.bg-neutral-950\/40,
+html[data-theme="dark"] .theme-content :is(div, section, article, aside, a).rounded-lg.border.border-white\/10.bg-neutral-950\/30,
+html[data-theme="dark"] .theme-content :is(div, section, article, aside, a).rounded-xl.border.border-white\/10.bg-black\/20,
+html[data-theme="dark"] .theme-content :is(div, section, article, aside, a).rounded-lg.border.border-white\/10.bg-black\/20 {
+  border-color: rgba(34, 211, 238, 0.15) !important;
+  background-color: rgba(9, 19, 37, 0.75) !important;
+}
+
+html[data-theme="light"] .theme-content :is(div, section, article, aside).rounded-2xl.border.border-white\/10.bg-white\/5 {
+  border-color: rgba(148, 163, 184, 0.24) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(244, 248, 252, 0.86)) !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08) !important;
+}
+
+html[data-theme="light"] .theme-content :is(div, section, article, aside, a).rounded-xl.border.border-white\/10.bg-neutral-950\/40,
+html[data-theme="light"] .theme-content :is(div, section, article, aside, a).rounded-xl.border.border-white\/10.bg-neutral-950\/30,
+html[data-theme="light"] .theme-content :is(div, section, article, aside, a).rounded-lg.border.border-white\/10.bg-neutral-950\/40,
+html[data-theme="light"] .theme-content :is(div, section, article, aside, a).rounded-lg.border.border-white\/10.bg-neutral-950\/30,
+html[data-theme="light"] .theme-content :is(div, section, article, aside, a).rounded-xl.border.border-white\/10.bg-black\/20,
+html[data-theme="light"] .theme-content :is(div, section, article, aside, a).rounded-lg.border.border-white\/10.bg-black\/20 {
+  border-color: rgba(148, 163, 184, 0.2) !important;
+  background-color: rgba(248, 250, 252, 0.96) !important;
+}
+
+html[data-theme="light"] .theme-content.bg-neutral-950,
+html[data-theme="light"] .theme-content .bg-neutral-950 {
+  background-color: var(--app-bg) !important;
+}
+
+html[data-theme="light"] .theme-content.bg-neutral-950\/95,
+html[data-theme="light"] .theme-content.bg-neutral-950\/60,
+html[data-theme="light"] .theme-content.bg-neutral-950\/40,
+html[data-theme="light"] .theme-content.bg-neutral-950\/30,
+html[data-theme="light"] .theme-content.bg-neutral-900\/60,
+html[data-theme="light"] .theme-content.bg-black\/40,
+html[data-theme="light"] .theme-content.bg-black\/30,
+html[data-theme="light"] .theme-content.bg-black\/20,
+html[data-theme="light"] .theme-content .bg-neutral-950\/95,
+html[data-theme="light"] .theme-content .bg-neutral-950\/60,
+html[data-theme="light"] .theme-content .bg-neutral-950\/40,
+html[data-theme="light"] .theme-content .bg-neutral-950\/30,
+html[data-theme="light"] .theme-content .bg-neutral-900\/60,
+html[data-theme="light"] .theme-content .bg-black\/40,
+html[data-theme="light"] .theme-content .bg-black\/30,
+html[data-theme="light"] .theme-content .bg-black\/20 {
+  background-color: var(--app-input) !important;
+}
+
+html[data-theme="light"] .theme-content .bg-white\/5 {
+  background-color: var(--app-surface) !important;
+}
+
+html[data-theme="light"] .theme-content .bg-white\/10,
+html[data-theme="light"] .theme-content .bg-white\/15 {
+  background-color: var(--app-surface-strong) !important;
+}
+
+html[data-theme="light"] .theme-content .border-white\/10,
+html[data-theme="light"] .theme-content .border-white\/15,
+html[data-theme="light"] .theme-content .border-white\/20,
+html[data-theme="light"] .theme-content .border-white\/30 {
+  border-color: var(--app-border) !important;
+}
+
+html[data-theme="light"] .theme-content .text-white {
+  color: var(--app-text) !important;
+}
+
+html[data-theme="light"] .theme-content .text-neutral-200 {
+  color: #1f2937 !important;
+}
+
+html[data-theme="light"] .theme-content .text-neutral-300 {
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .theme-content .text-neutral-400 {
+  color: #475569 !important;
+}
+
+html[data-theme="light"] .theme-content .text-neutral-500 {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] .theme-content .hover\:bg-white\/10:hover,
+html[data-theme="light"] .theme-content .hover\:bg-white\/20:hover {
+  background-color: rgba(15, 23, 42, 0.06) !important;
+}
+
+html[data-theme="light"] .landing-nav {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme="light"] .landing-nav .text-white {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .landing-nav .text-neutral-400 {
+  color: #475569 !important;
+}
+
+html[data-theme="light"] .landing-wallpaper {
+  filter: brightness(1.15) saturate(0.82) contrast(0.94);
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-card {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(15, 23, 42, 0.14) !important;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.1) !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-post,
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-panel {
+  background: rgba(248, 250, 252, 0.96) !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .text-slate-100 {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .text-slate-200 {
+  color: #1e293b !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .text-slate-300 {
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .text-slate-400 {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell [class*="bg-black/25"] {
+  background-color: rgba(248, 250, 252, 0.96) !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-card [class*="text-slate-100"] {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-card [class*="text-slate-200"] {
+  color: #1f2937 !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-card [class*="text-slate-300"] {
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-card [class*="text-slate-400"] {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-card [class*="bg-black/"],
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-card [class*="lg:bg-black/"] {
+  background-color: rgba(248, 250, 252, 0.96) !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-card [class*="border-white/"] {
+  border-color: rgba(148, 163, 184, 0.32) !important;
+}
+
+html[data-theme="light"] .theme-content .athlete-profile-shell .ath-profile-card [class*="text-cyan-300"] {
+  color: #0e7490 !important;
+}
+
+html[data-theme="light"] .theme-content .side-nav-rail {
+  border-color: rgba(59, 130, 246, 0.22) !important;
+  border-right-color: rgba(59, 130, 246, 0.3) !important;
+  background: linear-gradient(180deg, rgba(226, 236, 250, 0.9), rgba(214, 228, 246, 0.82)) !important;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme="light"] .theme-content .side-nav-icon-link {
+  color: #0f172a !important;
+  border-color: rgba(59, 130, 246, 0.24) !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+}
+
+html[data-theme="light"] .theme-content .side-nav-icon-link:hover {
+  background: rgba(191, 219, 254, 0.45) !important;
+  border-color: rgba(59, 130, 246, 0.42) !important;
+}
+
+html[data-theme="light"] .theme-content .side-nav-icon-link.side-nav-icon-link-active {
+  color: #0b3b56 !important;
+  background: rgba(186, 230, 253, 0.78) !important;
+  border-color: rgba(14, 165, 233, 0.58) !important;
+  box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.28), 0 0 12px rgba(56, 189, 248, 0.24) !important;
+}
+
+html[data-theme="light"] .theme-content .side-nav-heading {
+  color: rgba(51, 65, 85, 0.72) !important;
+}
+
+html[data-theme="light"] .theme-content .side-nav-link {
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .theme-content .side-nav-link:hover {
+  background: rgba(59, 130, 246, 0.08) !important;
+}
+
+html[data-theme="light"] .theme-content .side-nav-link.side-nav-link-active {
+  color: #0f172a !important;
+  background: rgba(59, 130, 246, 0.16) !important;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2) !important;
+}
+
+html[data-theme="light"] .theme-content .side-nav-count {
+  color: #0f172a !important;
+  border-color: rgba(59, 130, 246, 0.26) !important;
+  background: rgba(191, 219, 254, 0.72) !important;
+}
