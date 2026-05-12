@@ -18,61 +18,9 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    """Upgrade schema."""
-    op.execute(
-        """
-        ALTER TABLE public.feed_events
-        DROP CONSTRAINT IF EXISTS feed_events_event_type_check;
-        """
-    )
-    op.execute(
-        """
-        ALTER TABLE public.feed_events
-        ADD CONSTRAINT feed_events_event_type_check
-        CHECK (
-            event_type IN (
-                'impression',
-                'view_3s',
-                'view_10s',
-                'view_complete',
-                'profile_open',
-                'shortlist',
-                'message_sent',
-                'hide',
-                'report',
-                'like',
-                'save'
-            )
-        );
-        """
-    )
+    pass
 
 
 def downgrade() -> None:
-    """Downgrade schema."""
-    op.execute(
-        """
-        ALTER TABLE public.feed_events
-        DROP CONSTRAINT IF EXISTS feed_events_event_type_check;
-        """
-    )
-    op.execute(
-        """
-        ALTER TABLE public.feed_events
-        ADD CONSTRAINT feed_events_event_type_check
-        CHECK (
-            event_type IN (
-                'impression',
-                'view_3s',
-                'view_10s',
-                'view_complete',
-                'profile_open',
-                'shortlist',
-                'message_sent',
-                'hide',
-                'report'
-            )
-        );
-        """
-    )
+    pass
 
