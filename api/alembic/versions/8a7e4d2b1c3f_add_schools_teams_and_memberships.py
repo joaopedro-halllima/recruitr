@@ -19,7 +19,8 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    """Upgrade schema."""
+    pass
+    """Upgrade schema.
     op.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
 
     op.create_table(
@@ -154,11 +155,12 @@ def upgrade() -> None:
         "coach_profiles",
         ["school_unitid"],
         unique=False,
-    )
+    ) """
 
 
 def downgrade() -> None:
-    """Downgrade schema."""
+    pass
+    """Downgrade schema.
     op.drop_index("ix_coach_profiles_school_unitid", table_name="coach_profiles")
     op.drop_constraint("fk_coach_profiles_school_unitid_schools", "coach_profiles", type_="foreignkey")
     op.drop_column("coach_profiles", "school_unitid")
@@ -178,4 +180,4 @@ def downgrade() -> None:
 
     op.execute("DROP INDEX IF EXISTS public.ix_schools_name_trgm;")
     op.drop_index("ix_schools_state", table_name="schools")
-    op.drop_table("schools")
+    op.drop_table("schools") ."""
