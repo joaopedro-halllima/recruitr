@@ -59,11 +59,11 @@ def upgrade() -> None:
     )
     op.create_index("ix_schools_state", "schools", ["state"], unique=False)
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_schools_name_trgm
         ON public.schools
         USING gin (name gin_trgm_ops);
-        """
+        
     )
 
     op.create_table(
