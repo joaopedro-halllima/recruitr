@@ -14,7 +14,7 @@ export default function SchoolCard({ school }: SchoolCardProps) {
       className="group block rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:-translate-y-0.5 hover:bg-white/10"
     >
       <div className="flex items-start gap-3">
-        <SchoolLogo name={school.name} logoUrl={school.logo_url} webaddr={school.webaddr} size={52} />
+        <SchoolLogo name={school.name} logoUrl={school.logo_url} webaddr={school.website} size={52} />
         <div className="min-w-0">
           <div className="truncate text-sm font-semibold text-white group-hover:text-white/95">{school.name}</div>
           <div className="mt-1 text-xs text-neutral-400">
