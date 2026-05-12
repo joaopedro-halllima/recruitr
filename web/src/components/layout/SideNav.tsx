@@ -182,7 +182,7 @@ export default function SideNav() {
 
   return (
     <div
-      className="side-nav-shell relative hidden xl:block xl:h-[calc(100vh-3.5rem)] xl:min-h-[690px] xl:w-full"
+      className="side-nav-shell relative hidden lg:block lg:h-[calc(100vh-3.5rem)] lg:min-h-[690px] lg:w-full"
       onMouseLeave={() => {
         setPanelOpen(false);
         setHoveredHref(null);
