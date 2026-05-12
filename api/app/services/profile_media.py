@@ -169,8 +169,8 @@ def upsert_profile_media(
               (:user_id, :avatar_media_asset_id, :banner_media_asset_id)
             ON CONFLICT (user_id)
             DO UPDATE SET
-              avatar_media_asset_id = EXCLUDED.avatar_media_asset_id,
-              banner_media_asset_id = EXCLUDED.banner_media_asset_id,
+              avatar_media_asset_id = COALESCE(EXCLUDED.avatar_media_asset_id, profile_media.avatar_media_asset_id),
+              banner_media_asset_id = COALESCE(EXCLUDED.banner_media_asset_id, profile_media.banner_media_asset_id),
               updated_at = now()
             """
         ),
