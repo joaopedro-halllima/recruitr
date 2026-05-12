@@ -17,8 +17,9 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    pass
+    """
     op.execute(
-        """
         CREATE TABLE IF NOT EXISTS public.post_comments (
           id BIGSERIAL PRIMARY KEY,
           post_id BIGINT NOT NULL REFERENCES public.posts(id) ON DELETE CASCADE,
@@ -28,46 +29,46 @@ def upgrade() -> None:
           created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
           updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
-        """
+        
     )
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_post_comments_post_id_created_at
         ON public.post_comments (post_id, created_at DESC)
-        """
+        
     )
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_post_comments_parent_comment_id
         ON public.post_comments (parent_comment_id)
-        """
+        
     )
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_post_comments_user_id
         ON public.post_comments (user_id)
-        """
+        
     )
 
     op.execute(
-        """
+        
         CREATE TABLE IF NOT EXISTS public.post_comment_likes (
           comment_id BIGINT NOT NULL REFERENCES public.post_comments(id) ON DELETE CASCADE,
           user_id INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
           created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
           PRIMARY KEY (comment_id, user_id)
         )
-        """
+        
     )
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_post_comment_likes_user_id
         ON public.post_comment_likes (user_id)
-        """
+        
     )
 
     op.execute(
-        """
+        
         CREATE TABLE IF NOT EXISTS public.post_comment_mentions (
           comment_id BIGINT NOT NULL REFERENCES public.post_comments(id) ON DELETE CASCADE,
           mentioned_user_id INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
@@ -76,17 +77,19 @@ def upgrade() -> None:
           created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
           PRIMARY KEY (comment_id, mentioned_user_id)
         )
-        """
+        
     )
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_post_comment_mentions_mentioned_user_id
         ON public.post_comment_mentions (mentioned_user_id)
-        """
-    )
+        
+    ) """
 
 
 def downgrade() -> None:
+    pass
+    """
     op.execute("DROP INDEX IF EXISTS public.ix_post_comment_mentions_mentioned_user_id")
     op.execute("DROP TABLE IF EXISTS public.post_comment_mentions")
     op.execute("DROP INDEX IF EXISTS public.ix_post_comment_likes_user_id")
@@ -94,4 +97,4 @@ def downgrade() -> None:
     op.execute("DROP INDEX IF EXISTS public.ix_post_comments_user_id")
     op.execute("DROP INDEX IF EXISTS public.ix_post_comments_parent_comment_id")
     op.execute("DROP INDEX IF EXISTS public.ix_post_comments_post_id_created_at")
-    op.execute("DROP TABLE IF EXISTS public.post_comments")
+    op.execute("DROP TABLE IF EXISTS public.post_comments") """
