@@ -317,7 +317,7 @@ export default function SchoolDetailPage() {
                 <SchoolLogo
                   name={school.name}
                   logoUrl={school.logo_url || school.derived_logo_url}
-                  webaddr={school.webaddr}
+                  webaddr={school.website}
                   size={64}
                 />
                 <div>
@@ -327,13 +327,13 @@ export default function SchoolDetailPage() {
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
                     <span className="rounded-full border border-white/10 bg-black/30 px-2 py-0.5 text-neutral-300">
-                      {school.is_community_college ? "2-year" : "4-year"}
+                      {school.level || "4-year"}
                     </span>
-                    {school.iclevel ? (
+                    {school.sector ? (
                       <span className="rounded-full border border-white/10 bg-black/30 px-2 py-0.5 text-neutral-300">
-                        {school.iclevel}
-                      </span>
-                    ) : null}
+                        {school.sector}
+                    </span>
+                  ) : null}
                     <span className="rounded-full border border-white/10 bg-black/30 px-2 py-0.5 text-neutral-300">
                       Teams: {school.team_count}
                     </span>
@@ -341,9 +341,9 @@ export default function SchoolDetailPage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                {school.webaddr ? (
+                {school.website ? (
                   <a
-                    href={school.webaddr.startsWith("http") ? school.webaddr : `https://${school.webaddr}`}
+                    href={school.website.startsWith("http") ? school.website : `https://${school.website}`}
                     target="_blank"
                     rel="noreferrer"
                     className="rounded-lg border border-white/10 px-3 py-2 text-xs hover:bg-white/10"
