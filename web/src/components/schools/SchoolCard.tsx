@@ -24,7 +24,7 @@ export default function SchoolCard({ school }: SchoolCardProps) {
             <span className="rounded-full border border-white/10 bg-black/30 px-2 py-0.5 text-neutral-300">
               {school.level || "4-year"}
             </span>
-            {school.iclevel ? (
+            {school.sector ? (
               <span className="rounded-full border border-white/10 bg-black/30 px-2 py-0.5 text-neutral-300">
                 {school.sector}
               </span>
