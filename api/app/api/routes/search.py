@@ -1,19 +1,19 @@
 from __future__ import annotations
-
+ 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-
+ 
 from app.api.routes.auth import get_current_user
 from app.core.config import settings
 from app.db.deps import get_db
 from app.models.user import User
 from app.search_index import reindex_all
 from app.services.meili import MeiliError, search_index
-
+ 
 router = APIRouter(prefix="/api/v1", tags=["search"])
-
-
+ 
+ 
 def _user_has_role(db: Session, user_id: int, role_key: str) -> bool:
     return bool(
         db.execute(
@@ -31,19 +31,19 @@ def _user_has_role(db: Session, user_id: int, role_key: str) -> bool:
             {"user_id": user_id, "role_key": role_key},
         ).scalar()
     )
-
-
+ 
+ 
 def _search_user_item_from_hit(raw: dict) -> dict | None:
     role = str(raw.get("role") or "").strip().lower()
     if role not in {"athlete", "coach"}:
         return None
-
+ 
     user_id_raw = raw.get("userId", raw.get("user_id", raw.get("id")))
     try:
         user_id = int(user_id_raw)
     except (TypeError, ValueError):
         return None
-
+ 
     email = raw.get("email")
     name = (raw.get("name") or email or f"User {user_id}").strip()
     sport_val = raw.get("sport")
@@ -54,7 +54,7 @@ def _search_user_item_from_hit(raw: dict) -> dict | None:
     organization_name = raw.get("organizationName", raw.get("organization_name")) if role == "coach" else None
     level = raw.get("level") if role == "coach" else None
     school_name = raw.get("schoolName", raw.get("school_name"))
-
+ 
     meta = raw.get("meta")
     if not meta:
         meta_parts: list[str] = []
@@ -71,7 +71,7 @@ def _search_user_item_from_hit(raw: dict) -> dict | None:
         if role == "coach" and level:
             meta_parts.append(str(level))
         meta = " • ".join(meta_parts)
-
+ 
     return {
         "userId": user_id,
         "email": email,
@@ -86,8 +86,8 @@ def _search_user_item_from_hit(raw: dict) -> dict | None:
         "schoolName": school_name,
         "meta": meta or "",
     }
-
-
+ 
+ 
 @router.post("/search/reindex")
 def reindex_search(
     current_user: User = Depends(get_current_user),
@@ -101,8 +101,8 @@ def reindex_search(
     except MeiliError as exc:
         raise HTTPException(status_code=503, detail=f"Meili reindex failed: {exc}") from exc
     return {"ok": True, **result}
-
-
+ 
+ 
 @router.get("/search/users")
 def search_users(
     q: str = Query("", max_length=120),
@@ -144,7 +144,7 @@ def search_users(
                     items.append(normalized)
         if items:
             return {"source": "meili", "items": items}
-
+ 
     # SQL fallback (works immediately without indexing pipeline).
     pattern = f"%{q.strip()}%"
     rows = db.execute(
@@ -221,7 +221,7 @@ def search_users(
             "offset": offset,
         },
     ).mappings().all()
-
+ 
     items = []
     for r in rows:
         roles = list(r["roles"] or [])
@@ -261,8 +261,8 @@ def search_users(
             }
         )
     return {"source": "sql", "items": items}
-
-
+ 
+ 
 @router.get("/search/schools")
 def search_schools(
     q: str = Query("", max_length=120),
@@ -276,14 +276,8 @@ def search_schools(
     if state:
         filters.append(f'state = "{state.strip().upper()}"')
     if level:
-        level_norm = level.strip().lower()
-        if level_norm == "2-year":
-            filters.append("is_community_college = true")
-        elif level_norm == "4-year":
-            filters.append("is_community_college = false")
-        else:
-            filters.append(f'iclevel = "{level.strip()}"')
-
+        filters.append(f'level = "{level.strip()}"')
+ 
     meili_hits = search_index(
         index_uid="schools",
         query=q.strip(),
@@ -292,7 +286,7 @@ def search_schools(
     )
     if meili_hits is not None and len(meili_hits) > 0:
         return {"source": "meili", "items": meili_hits}
-
+ 
     rows = db.execute(
         text(
             """
@@ -301,10 +295,11 @@ def search_schools(
               s.name,
               s.city,
               s.state,
-              s.webaddr,
+              s.website,
               s.logo_url,
-              s.is_community_college,
-              s.iclevel
+              s.level,
+              s.sector,
+              s.conference
             FROM public.schools s
             WHERE
               (
@@ -315,18 +310,7 @@ def search_schools(
               AND (CAST(:state AS text) IS NULL OR upper(s.state) = upper(CAST(:state AS text)))
               AND (
                 CAST(:level AS text) IS NULL
-                OR (
-                  lower(CAST(:level AS text)) = '2-year'
-                  AND s.is_community_college = true
-                )
-                OR (
-                  lower(CAST(:level AS text)) = '4-year'
-                  AND s.is_community_college = false
-                )
-                OR (
-                  lower(CAST(:level AS text)) NOT IN ('2-year', '4-year')
-                  AND lower(COALESCE(s.iclevel, '')) = lower(CAST(:level AS text))
-                )
+                OR lower(COALESCE(s.level, '')) = lower(CAST(:level AS text))
               )
             ORDER BY
               CASE WHEN :q = '' THEN 0 ELSE similarity(s.name, :q) END DESC,
@@ -350,16 +334,17 @@ def search_schools(
                 "name": r["name"],
                 "city": r["city"],
                 "state": r["state"],
-                "webaddr": r["webaddr"],
+                "website": r["website"],
                 "logo_url": r["logo_url"],
-                "is_community_college": bool(r["is_community_college"]),
-                "iclevel": r["iclevel"],
+                "level": r["level"],
+                "sector": r["sector"],
+                "conference": r["conference"],
             }
             for r in rows
         ],
     }
-
-
+ 
+ 
 @router.get("/search/teams")
 def search_teams(
     q: str = Query("", max_length=120),
@@ -385,7 +370,7 @@ def search_teams(
     )
     if meili_hits is not None and len(meili_hits) > 0:
         return {"source": "meili", "items": meili_hits}
-
+ 
     rows = db.execute(
         text(
             """
@@ -449,8 +434,8 @@ def search_teams(
             for r in rows
         ],
     }
-
-
+ 
+ 
 @router.get("/search/tags")
 def search_tags(
     q: str = Query("", max_length=120),
@@ -492,7 +477,7 @@ def search_tags(
             "limit": limit,
         },
     ).mappings().all()
-
+ 
     return {
         "source": "sql",
         "items": [
@@ -505,8 +490,8 @@ def search_tags(
             for r in rows
         ],
     }
-
-
+ 
+ 
 @router.get("/autocomplete/schools")
 def autocomplete_schools(
     q: str = Query("", max_length=120),
@@ -515,8 +500,8 @@ def autocomplete_schools(
     db: Session = Depends(get_db),
 ):
     return search_schools(q=q, limit=limit, _=current_user, db=db)
-
-
+ 
+ 
 @router.get("/autocomplete/teams")
 def autocomplete_teams(
     q: str = Query("", max_length=120),
