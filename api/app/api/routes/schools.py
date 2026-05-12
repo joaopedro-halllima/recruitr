@@ -38,19 +38,15 @@ def _ensure_school_exists(db: Session, unitid: str) -> dict:
             SELECT
               unitid,
               name,
-              addr,
               city,
               state,
               zip,
-              webaddr,
-              latitude,
-              longitud,
-              iclevel,
-              control,
-              is_community_college,
+              website,
+              sector,
+              level,
+              conference,
               logo_url,
-              created_at,
-              updated_at
+              created_at
             FROM public.schools
             WHERE unitid = :unitid
             """
@@ -62,10 +58,10 @@ def _ensure_school_exists(db: Session, unitid: str) -> dict:
     return dict(school)
 
 
-def _website_domain(webaddr: str | None) -> str | None:
-    if not webaddr:
+def _website_domain(website: str | None) -> str | None:
+    if not website:
         return None
-    candidate = webaddr.strip()
+    candidate = website.strip()
     if not candidate:
         return None
     parsed = urlparse(candidate if "://" in candidate else f"https://{candidate}")
@@ -75,8 +71,8 @@ def _website_domain(webaddr: str | None) -> str | None:
     return host or None
 
 
-def _derived_logo_url(webaddr: str | None) -> str | None:
-    domain = _website_domain(webaddr)
+def _derived_logo_url(website: str | None) -> str | None:
+    domain = _website_domain(website)
     if not domain:
         return None
     return f"https://logo.clearbit.com/{domain}"
@@ -89,17 +85,6 @@ def _school_initials(name: str) -> str:
     if len(parts) == 1:
         return parts[0][:2].upper()
     return f"{parts[0][0]}{parts[1][0]}".upper()
-
-
-def _level_matches_filter(level_filter: str | None, value_iclevel: str | None, is_cc: bool) -> bool:
-    if not level_filter:
-        return True
-    normalized = level_filter.strip().lower()
-    if normalized == "2-year":
-        return bool(is_cc)
-    if normalized == "4-year":
-        return not bool(is_cc)
-    return (value_iclevel or "").strip().lower() == normalized
 
 
 def _can_manage_team_memberships(db: Session, user_id: int, team_id: int) -> bool:
@@ -139,7 +124,6 @@ def list_schools(
     state_norm = state.strip().upper() if state else None
     level_norm = level.strip() if level else None
 
-    # Use trigram similarity when query text exists.
     rows = db.execute(
         text(
             """
@@ -148,10 +132,11 @@ def list_schools(
               s.name,
               s.city,
               s.state,
-              s.webaddr,
+              s.website,
               s.logo_url,
-              s.is_community_college,
-              s.iclevel,
+              s.level,
+              s.sector,
+              s.conference,
               COUNT(*) OVER()::int AS total_count,
               CASE
                 WHEN :q = '' THEN 0.0
@@ -167,18 +152,7 @@ def list_schools(
               AND (CAST(:state_norm AS text) IS NULL OR upper(s.state) = CAST(:state_norm AS text))
               AND (
                 CAST(:level_norm AS text) IS NULL
-                OR (
-                  lower(CAST(:level_norm AS text)) = '2-year'
-                  AND s.is_community_college = true
-                )
-                OR (
-                  lower(CAST(:level_norm AS text)) = '4-year'
-                  AND s.is_community_college = false
-                )
-                OR (
-                  lower(CAST(:level_norm AS text)) NOT IN ('2-year', '4-year')
-                  AND lower(COALESCE(s.iclevel, '')) = lower(CAST(:level_norm AS text))
-                )
+                OR lower(COALESCE(s.level, '')) = lower(CAST(:level_norm AS text))
               )
             ORDER BY score DESC, s.name ASC
             LIMIT :limit
@@ -201,13 +175,13 @@ def list_schools(
             "name": r["name"],
             "city": r["city"],
             "state": r["state"],
-            "webaddr": r["webaddr"],
+            "website": r["website"],
             "logo_url": r["logo_url"],
-            "is_community_college": bool(r["is_community_college"]),
-            "iclevel": r["iclevel"],
+            "level": r["level"],
+            "sector": r["sector"],
+            "conference": r["conference"],
         }
         for r in rows
-        if _level_matches_filter(level_norm, r["iclevel"], bool(r["is_community_college"]))
     ]
     total = int(rows[0]["total_count"]) if rows else 0
     return {
@@ -258,23 +232,20 @@ def get_school(
     )
 
     explicit_logo = school.get("logo_url")
-    derived_logo = None if explicit_logo else _derived_logo_url(school.get("webaddr"))
+    derived_logo = None if explicit_logo else _derived_logo_url(school.get("website"))
     initials = _school_initials(str(school.get("name") or "School"))
 
     return {
         "school": {
             "unitid": school["unitid"],
             "name": school["name"],
-            "addr": school["addr"],
             "city": school["city"],
             "state": school["state"],
             "zip": school["zip"],
-            "webaddr": school["webaddr"],
-            "latitude": school["latitude"],
-            "longitud": school["longitud"],
-            "iclevel": school["iclevel"],
-            "control": school["control"],
-            "is_community_college": bool(school["is_community_college"]),
+            "website": school["website"],
+            "level": school["level"],
+            "sector": school["sector"],
+            "conference": school["conference"],
             "logo_url": explicit_logo,
             "derived_logo_url": derived_logo,
             "logo_source": "stored" if explicit_logo else ("clearbit" if derived_logo else "initials"),
