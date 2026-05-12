@@ -17,34 +17,8 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.execute(
-        """
-        CREATE TABLE IF NOT EXISTS public.auth_action_tokens (
-          id BIGSERIAL PRIMARY KEY,
-          user_id INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-          purpose VARCHAR(32) NOT NULL,
-          token_hash VARCHAR(128) NOT NULL UNIQUE,
-          expires_at TIMESTAMPTZ NOT NULL,
-          used_at TIMESTAMPTZ,
-          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-        )
-        """
-    )
-    op.execute(
-        """
-        CREATE INDEX IF NOT EXISTS ix_auth_action_tokens_user_purpose
-        ON public.auth_action_tokens (user_id, purpose)
-        """
-    )
-    op.execute(
-        """
-        CREATE INDEX IF NOT EXISTS ix_auth_action_tokens_expires_at
-        ON public.auth_action_tokens (expires_at)
-        """
-    )
+    pass
 
 
 def downgrade() -> None:
-    op.execute("DROP INDEX IF EXISTS public.ix_auth_action_tokens_expires_at")
-    op.execute("DROP INDEX IF EXISTS public.ix_auth_action_tokens_user_purpose")
-    op.execute("DROP TABLE IF EXISTS public.auth_action_tokens")
+    pass
