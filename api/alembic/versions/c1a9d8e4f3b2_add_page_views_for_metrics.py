@@ -18,8 +18,10 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    pass
+    """
     op.execute(
-        """
+
         CREATE TABLE IF NOT EXISTS public.page_views (
           id BIGSERIAL PRIMARY KEY,
           path TEXT NOT NULL,
@@ -29,30 +31,32 @@ def upgrade() -> None:
           title VARCHAR(255),
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
-        """
+        
     )
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_page_views_created_at
         ON public.page_views (created_at DESC)
-        """
+        
     )
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_page_views_user_id
         ON public.page_views (user_id)
-        """
+        
     )
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_page_views_path
         ON public.page_views (path)
-        """
-    )
+        
+    ) """
 
 
 def downgrade() -> None:
+    pass
+    """
     op.execute("DROP INDEX IF EXISTS public.ix_page_views_path")
     op.execute("DROP INDEX IF EXISTS public.ix_page_views_user_id")
     op.execute("DROP INDEX IF EXISTS public.ix_page_views_created_at")
-    op.execute("DROP TABLE IF EXISTS public.page_views")
+    op.execute("DROP TABLE IF EXISTS public.page_views") """
