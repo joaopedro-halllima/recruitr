@@ -17,8 +17,9 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    pass
+    """
     op.execute(
-        """
         CREATE TABLE IF NOT EXISTS public.profile_media (
           user_id INTEGER PRIMARY KEY REFERENCES public.users(id) ON DELETE CASCADE,
           avatar_media_asset_id BIGINT REFERENCES public.media_assets(id) ON DELETE SET NULL,
@@ -26,23 +27,25 @@ def upgrade() -> None:
           created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
           updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
-        """
+        
     )
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_profile_media_avatar_media_asset_id
         ON public.profile_media (avatar_media_asset_id)
-        """
+        
     )
     op.execute(
-        """
+        
         CREATE INDEX IF NOT EXISTS ix_profile_media_banner_media_asset_id
         ON public.profile_media (banner_media_asset_id)
-        """
-    )
+        
+    ) """
 
 
 def downgrade() -> None:
+    pass
+    """
     op.execute("DROP INDEX IF EXISTS public.ix_profile_media_banner_media_asset_id")
     op.execute("DROP INDEX IF EXISTS public.ix_profile_media_avatar_media_asset_id")
-    op.execute("DROP TABLE IF EXISTS public.profile_media")
+    op.execute("DROP TABLE IF EXISTS public.profile_media") """
