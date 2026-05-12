@@ -22,11 +22,11 @@ export default function SchoolCard({ school }: SchoolCardProps) {
           </div>
           <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
             <span className="rounded-full border border-white/10 bg-black/30 px-2 py-0.5 text-neutral-300">
-              {school.is_community_college ? "2-year" : "4-year"}
+              {school.level || "4-year"}
             </span>
             {school.iclevel ? (
               <span className="rounded-full border border-white/10 bg-black/30 px-2 py-0.5 text-neutral-300">
-                {school.iclevel}
+                {school.sector}
               </span>
             ) : null}
           </div>
