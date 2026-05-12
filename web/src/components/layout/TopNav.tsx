@@ -330,7 +330,7 @@ export default function TopNav({ userEmail, onLogout, unreadCount = 0 }: TopNavP
               name: s.name,
               state: s.state ?? null,
               logoUrl: s.logo_url ?? null,
-              webaddr: s.webaddr ?? null,
+              webaddr: s.website ?? null,
             }))
           );
           setTeamSuggestions(
