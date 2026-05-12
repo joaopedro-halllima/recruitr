@@ -277,10 +277,11 @@ export type SchoolCardItem = {
   name: string;
   city: string | null;
   state: string | null;
-  webaddr: string | null;
+  website: string | null;
   logo_url: string | null;
-  is_community_college: boolean;
-  iclevel?: string | null;
+  level: string | null;
+  sector: string | null;
+  conference: string | null;
 };
 
 export type SchoolDirectoryResponse = {
@@ -294,16 +295,13 @@ export type SchoolDirectoryResponse = {
 export type SchoolDetail = {
   unitid: string;
   name: string;
-  addr: string | null;
   city: string | null;
   state: string | null;
   zip: string | null;
-  webaddr: string | null;
-  latitude: number | null;
-  longitud: number | null;
-  iclevel: string | null;
-  control: string | null;
-  is_community_college: boolean;
+  website: string | null;
+  level: string | null;
+  sector: string | null;
+  conference: string | null;
   logo_url: string | null;
   derived_logo_url: string | null;
   logo_source: "stored" | "clearbit" | "initials";
